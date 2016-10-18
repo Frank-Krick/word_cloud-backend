@@ -1,14 +1,32 @@
-import falcon
-import json
- 
-class QuoteResource:
-    def on_get(self, req, resp):
+import falcon, json, pymongo
+
+
+MONGO_DB_USER_FILE = '/home/frank/word_cloud-backend/config/mongodb-user'
+mongo_db_user_config = open(MONGO_DB_USER_FILE, 'r').read()
+
+
+user_name = mongo_db_user_config.split(':')[0]
+password = mongo_db_user_config.split(':')[1]
+
+
+mongo_db_client = pymongo.MongoClient('wordcloud-mongo.home.franks-reich.net', 27017)
+mongo_db_client.admin.authenticate(user_name, password)
+wordcloud_database = mongo_db_client.wordcloud
+
+
+class WordCloudResource:
+    def on_get(self, request, response, name):
         """Handles GET requests"""
-        quote = {
-            'quote': 'I\'ve always been more interested in the future than in the past.',
-            'author': 'Grace Hopper'
+        wordcloud = {
+            'name': name,
+            'wordcloud' : {
+                'blub' : 40,
+                'blah' : 34,
+                'derp' : 57
+            }
         }
-        resp.body = json.dumps(quote)
-                                      
+        response.body = json.dumps(wordcloud)
+
+
 app = falcon.API()
-app.add_route('/quote', QuoteResource())
+app.add_route('/wordcloud/{name}', WordCloudResource())
