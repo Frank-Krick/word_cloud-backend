@@ -5,8 +5,8 @@ MONGO_DB_USER_FILE = '/home/frank/word_cloud-backend/config/mongodb-user'
 mongo_db_user_config = open(MONGO_DB_USER_FILE, 'r').read()
 
 
-user_name = mongo_db_user_config.split(':')[0]
-password = mongo_db_user_config.split(':')[1]
+user_name = mongo_db_user_config.rstrip('\n').split(':')[0]
+password = mongo_db_user_config.rstrip('\n').split(':')[1]
 
 
 mongo_db_client = pymongo.MongoClient('wordcloud-mongo.home.franks-reich.net', 27017)
